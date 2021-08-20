@@ -5,7 +5,7 @@ NUMA_NODE=0
 #The following parameters stand for log2 of number of records in database
 #Final plot will show on x-axis the number of records in DB comprised between [MIN;MAX] 
 MIN_ORDER_RECORD=17
-MAX_ORDER_RECORD=18
+MAX_ORDER_RECORD=23
 
 ### HARDCODED - DO NOT TOUCH ###
 EXP=10
@@ -33,11 +33,9 @@ for i in $(seq ${MIN_ORDER_RECORD} ${MAX_ORDER_RECORD}); do
 
 	numactl -N ${NUMA_NODE} -- ${YCSB_BIN} load hpredis -p recordcount=${RECORDCOUNT} -p threadcount=24 -p insertorder=ordered | tee ${EXP_DIR}/data_hpredis_load_rec${ORDER}_op${OPORDER}
 
-	GOGC=${VARINT} numactl --physcpubind=0,2,4,6,8,10,12,14,16,18 --preferred=0 ${YCSB_BIN} run hpredis -P ${WORKLOAD_PATH} -p recordcount=${RECORDCOUNT2} -p operationcount=${OPERATIONCOUNT} -p threadcount=10 -p insertorder=ordered | tee ${EXP_DIR}/data_hpredis_run_rec${ORDER}_op${OPORDER}
+	GOGC=${VARINT} numactl -N ${NUMA_NODE} --preferred=0 ${YCSB_BIN} run hpredis -P ${WORKLOAD_PATH} -p recordcount=${RECORDCOUNT2} -p operationcount=${OPERATIONCOUNT} -p threadcount=10 -p insertorder=ordered | tee ${EXP_DIR}/data_hpredis_run_rec${ORDER}_op${OPORDER}
 done
 
-for f in /results/exp10/data_hpredis_run_*;
-	do /parse.sh $f >> /data.dat ;
-done
+/parse.sh ${OPORDER} ${MIN_ORDER_RECORD} ${MAX_ORDER_RECORD}
 
 gnuplot /plot.pl 

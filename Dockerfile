@@ -11,4 +11,6 @@ RUN apt install -y gawk gnuplot numactl bc
 ADD entrypoint.sh .
 ADD parse.sh .
 ADD plot.pl .
+ADD styles.inc .
+
 CMD /entrypoint.sh
