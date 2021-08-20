@@ -1,12 +1,5 @@
 #!/bin/bash
 
-### TO BE CONFIGURED BY TESTER ###
-NUMA_NODE=0
-#The following parameters stand for log2 of number of records in database
-#Final plot will show on x-axis the number of records in DB comprised between [MIN;MAX] 
-MIN_ORDER_RECORD=17
-MAX_ORDER_RECORD=23
-
 ### HARDCODED - DO NOT TOUCH ###
 EXP=10
 OPORDER=27
@@ -15,6 +8,10 @@ EXP_DIR="/results/exp${EXP}"
 YCSB_DIR=/root/go-ycsb
 YCSB_BIN=${YCSB_DIR}/bin/go-ycsb
 WORKLOAD_PATH=${YCSB_DIR}/workloads/workloadf
+#The following parameters stand for log2 of number of records in database
+#Final plot will show on x-axis the number of records in DB comprised between [MIN;MAX] 
+MIN_ORDER_RECORD=$MIN_ORDER
+MAX_ORDER_RECORD=$MAX_ORDER
 
 rm -rf ${EXP_DIR}
 mkdir -p ${EXP_DIR}

@@ -13,4 +13,8 @@ ADD parse.sh .
 ADD plot.pl .
 ADD styles.inc .
 
-CMD /entrypoint.sh
+ENV MIN_ORDER=$MIN_ORDER
+ENV MIN_ORDER=$MAX_ORDER
+ENV NUMA_NODE=$NUMA_NODE
+
+ENTRYPOINT /entrypoint.sh 
