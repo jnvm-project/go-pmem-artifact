@@ -2,7 +2,7 @@
 
 ### HARDCODED - DO NOT TOUCH ###
 EXP=10
-OPORDER=27
+OPORDER=${OP_ORDER:-27}
 OPERATIONCOUNT=$(echo 2^${OPORDER} | bc -l)
 EXP_DIR="/results/exp${EXP}"
 YCSB_DIR=/root/go-ycsb
