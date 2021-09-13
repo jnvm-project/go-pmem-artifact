@@ -13,6 +13,10 @@ WORKLOAD_PATH=${YCSB_DIR}/workloads/workloadf
 MIN_ORDER_RECORD=$MIN_ORDER
 MAX_ORDER_RECORD=$MAX_ORDER
 
+if [[ $EXP_NORUN =~ (y|yes|true) ]] ; then
+	echo "EXP_NORUN set to $EXP_NORUN, skipping ${EXP_NAME:-every} run"
+else
+
 rm -rf ${EXP_DIR}
 mkdir -p ${EXP_DIR}
 
@@ -32,6 +36,8 @@ for i in $(seq ${MIN_ORDER_RECORD} ${MAX_ORDER_RECORD}); do
 
 	GOGC=${VARINT} numactl -N ${NUMA_NODE} --preferred=0 ${YCSB_BIN} run hpredis -P ${WORKLOAD_PATH} -p recordcount=${RECORDCOUNT2} -p operationcount=${OPERATIONCOUNT} -p threadcount=10 -p insertorder=ordered | tee ${EXP_DIR}/data_hpredis_run_rec${ORDER}_op${OPORDER}
 done
+
+fi
 
 /parse.sh ${OPORDER} ${MIN_ORDER_RECORD} ${MAX_ORDER_RECORD}
 
