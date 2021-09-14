@@ -26,7 +26,7 @@ for i in $(seq ${MIN_ORDER_RECORD} ${MAX_ORDER_RECORD}); do
 	RECORDCOUNT2=$(echo $RECORDCOUNT - 100 | bc -l)
 	echo $RECORDCOUNT $RECORDCOUNT2 $OPERATIONCOUNT
 
-	VAR=$(echo "(30/(2^${ORDER}*2.4/1024/1024))*100" | bc -l)
+	VAR=$(echo "(10/(2^${ORDER}*2.4/1024/1024))*100" | bc -l)
 	VARINT=$(echo "$VAR / 1" | bc)
 	echo "GOGC = $VARINT"
 
