@@ -14,8 +14,6 @@ MIN_ORDER_RECORD=$MIN_ORDER
 MAX_ORDER_RECORD=$MAX_ORDER
 
 THREADCOUNT=10
-CPUSET=`numactl -N ${NUMA_NODE} -s | grep physcpubind | awk '{for(i=2; i<2+'${THREADCOUNT}'; i++) printf $i",";}' | head -c -1`
-#TODO try using GOMAXPROCS instead of manual physcpubind
 
 if [[ $EXP_NORUN =~ (y|yes|true) ]] ; then
 	echo "EXP_NORUN set to $EXP_NORUN, skipping ${EXP_NAME:-every} run"
@@ -36,9 +34,9 @@ for i in $(seq ${MIN_ORDER_RECORD} ${MAX_ORDER_RECORD}); do
 
 	rm -f /pmem0/coucou
 
-	numactl -C ${CPUSET} -- ${YCSB_BIN} load hpredis -p recordcount=${RECORDCOUNT} -p threadcount=${THREADCOUNT} -p insertorder=ordered | tee ${EXP_DIR}/data_hpredis_load_rec${ORDER}_op${OPORDER}
+	numactl -N ${NUMA_NODE} -- ${YCSB_BIN} load hpredis -p recordcount=${RECORDCOUNT} -p threadcount=${THREADCOUNT} -p insertorder=ordered | tee ${EXP_DIR}/data_hpredis_load_rec${ORDER}_op${OPORDER}
 
-	GOGC=${VARINT} numactl -C ${CPUSET} --preferred=0 ${YCSB_BIN} run hpredis -P ${WORKLOAD_PATH} -p recordcount=${RECORDCOUNT2} -p operationcount=${OPERATIONCOUNT} -p threadcount=${THREADCOUNT} -p insertorder=ordered | tee ${EXP_DIR}/data_hpredis_run_rec${ORDER}_op${OPORDER}
+	GOMAXPROCS=${THREADCOUNT} GOGC=${VARINT} numactl -N ${NUMA_NODE} --preferred=0 ${YCSB_BIN} run hpredis -P ${WORKLOAD_PATH} -p recordcount=${RECORDCOUNT2} -p operationcount=${OPERATIONCOUNT} -p threadcount=${THREADCOUNT} -p insertorder=ordered | tee ${EXP_DIR}/data_hpredis_run_rec${ORDER}_op${OPORDER}
 done
 
 fi
